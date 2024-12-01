@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let query = e.target.value.trim();
       let url = query 
         ? `https://restcountries.com/v3.1/name/${query}` 
-        : `https://restcountries.com/v3.1/all`; // Agar input bo'sh bo'lsa, barcha davlatlarni olish.
+        : `https://restcountries.com/v3.1/all`;
   
       let res = await fetch(url);
       if (!res.ok) throw new Error("API dan ma'lumot olinmadi");
