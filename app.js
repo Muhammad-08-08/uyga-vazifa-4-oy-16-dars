@@ -3,6 +3,59 @@ document.addEventListener("DOMContentLoaded", () => {
   const darkMode = document.querySelector(".dark-mode");
   const lightMode = document.querySelector(".light-mode");
   const body = document.body;
+
+  darkMode.style.display = "block";
+  lightMode.style.display = "none";
+
+  darkMode.addEventListener("click", () => {
+    body.style.backgroundColor = "#202D36";
+    document.querySelectorAll(".navtest").forEach((card) => {
+      card.style.backgroundColor = "#2B3743";
+      card.style.border = "none";
+    });
+    document.querySelectorAll(".card").forEach((card) => {
+      card.style.backgroundColor = "#2B3743";
+      card.style.color = "white";
+      card.style.border = "none";
+    });
+    document.querySelectorAll(".search").forEach((card) => {
+      card.style.backgroundColor = "#2B3743";
+      card.style.color = "white";
+      card.style.border = "none";
+    });
+    document.querySelectorAll("#select").forEach((card) => {
+      card.style.backgroundColor = "#2B3743";
+      card.style.color = "white";
+      card.style.border = "none";
+    });
+    body.style.color = "white";
+    darkMode.style.display = "none";
+    lightMode.style.display = "block";
+  });
+
+  lightMode.addEventListener("click", () => {
+    body.style.backgroundColor = "aliceblue";
+    document.querySelector(".navtest").style.backgroundColor = "white";
+    document.querySelectorAll(".card").forEach((card) => {
+      card.style.backgroundColor = "white";
+      card.style.color = "black";
+      card.style.border = "1px solid lightgray";
+    });
+    document.querySelectorAll(".search").forEach((card) => {
+      card.style.backgroundColor = "white";
+      card.style.color = "black";
+      card.style.border = "1px solid lightgray";
+    });
+    document.querySelectorAll("#select").forEach((card) => {
+      card.style.backgroundColor = "white";
+      card.style.color = "black";
+      card.style.border = "none";
+    });
+    body.style.color = "black";
+    darkMode.style.display = "block";
+    lightMode.style.display = "none";
+  });
+
   const search = document.querySelector(".search");
   const select = document.querySelector("#select");
 
