@@ -145,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
   
-  // Dastlab barcha davlatlarni ko'rsatish
   (async function loadAllCountries() {
     try {
       let res = await fetch("https://restcountries.com/v3.1/all");
