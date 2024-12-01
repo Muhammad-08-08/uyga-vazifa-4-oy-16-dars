@@ -1,174 +1,108 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let container = document.querySelector(".container");
-  container.innerHTML = "";
-  let darkMode = document.querySelector(".dark-mode");
-  let lightMode = document.querySelector(".light-mode");
-  let body = document.querySelector("body");
+  const container = document.querySelector(".container");
+  const darkMode = document.querySelector(".dark-mode");
+  const lightMode = document.querySelector(".light-mode");
+  const body = document.body;
+  const search = document.querySelector(".search");
+  const select = document.querySelector("#select");
+
   darkMode.style.display = "block";
   lightMode.style.display = "none";
 
-  let search = document.querySelector(".search");
-  let qidirish;
-  let select = document.querySelector("#select");
+  async function fetchCountries(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("API dan ma'lumot olinmadi");
+      return await response.json();
+    } catch (error) {
+      console.error("Xatolik:", error.message);
+      return [];
+    }
+  }
 
-  async function createCard() {
-    let response = await fetch("https://restcountries.com/v3.1/all");
-    let data = await response.json();
-    console.log(data);
-    qidirish = data;
+  function createCountryCard(country) {
+    const card = document.createElement("div");
+    card.classList.add("card");
 
-    data.forEach((elem) => {
-      let card = document.createElement("div");
-      card.classList.add("card");
-      let img = document.createElement("img");
-      img.src = elem.flags.png;
-      img.classList.add("flag");
-      let name = document.createElement("h2");
-      name.classList.add("name");
-      name.textContent = elem.name.common;
-      let population = document.createElement("p");
-      population.classList.add("population");
-      population.textContent = `Population: ${elem.population}`;
-      let region = document.createElement("p");
-      region.classList.add("region");
-      region.textContent = `Region: ${elem.region}`;
-      let capital = document.createElement("p");
-      capital.classList.add("capital");
-      capital.textContent = `Capital: ${elem.capital}`;
-      card.append(img, name, population, region, capital);
-      container.append(card);
+    const img = document.createElement("img");
+    img.src = country.flags?.png || "default-flag.png";
+    img.classList.add("flag");
 
-      card.addEventListener("click", () => {
-        window.location.replace(`card.html?name=${elem.name.common}`);
-      });
-    });
+    const name = document.createElement("h2");
+    name.classList.add("name");
+    name.textContent = country.name.common;
 
-    lightMode.addEventListener("click", () => {
-      body.style.backgroundColor = "aliceblue";
-      document.querySelector(".navtest").style.backgroundColor = "white";
-      document.querySelectorAll(".card").forEach((card) => {
-        card.style.backgroundColor = "white";
-        card.style.color = "black";
-        card.style.border = "1px solid lightgray";
-      });
-      document.querySelectorAll(".search").forEach((card) => {
-        card.style.backgroundColor = "white";
-        card.style.color = "black";
-        card.style.border = "1px solid lightgray";
-      });
-      document.querySelectorAll("#select").forEach((card) => {
-        card.style.backgroundColor = "white";
-        card.style.color = "black";
-        card.style.border = "none";
-      });
-      body.style.color = "black";
-      darkMode.style.display = "block";
-      lightMode.style.display = "none";
-    });
+    const population = document.createElement("p");
+    population.classList.add("population");
+    population.textContent = `Population: ${country.population.toLocaleString()}`;
 
-    darkMode.addEventListener("click", () => {
-      body.style.backgroundColor = "#202D36";
-      document.querySelectorAll(".navtest").forEach((card) => {
-        card.style.backgroundColor = "#2B3743";
-        card.style.border = "none";
-      })
-      document.querySelectorAll(".card").forEach((card) => {
-        card.style.backgroundColor = "#2B3743";
-        card.style.color = "white";
-        card.style.border = "none";
-      });
-      document.querySelectorAll(".search").forEach((card) => {
-        card.style.backgroundColor = "#2B3743";
-        card.style.color = "white";
-        card.style.border = "none";
-      });
-      document.querySelectorAll("#select").forEach((card) => {
-        card.style.backgroundColor = "#2B3743";
-        card.style.color = "white";
-        card.style.border = "none";
-      });   
-      body.style.color = "white";
-      darkMode.style.display = "none";
-      lightMode.style.display = "block";
+    const region = document.createElement("p");
+    region.classList.add("region");
+    region.textContent = `Region: ${country.region}`;
+
+    const capital = document.createElement("p");
+    capital.classList.add("capital");
+    capital.textContent = `Capital: ${
+      country.capital ? country.capital.join(", ") : "N/A"
+    }`;
+
+    card.append(img, name, population, region, capital);
+    container.append(card);
+
+    card.addEventListener("click", () => {
+      window.location.href = `card.html?name=${country.name.common}`;
     });
   }
-  search.addEventListener("keydown", async (e) => {
-    try {
-      let res = await fetch(
-        `https://restcountries.com/v3.1/name/${e.target.value}`
-      );
-      if (!res.ok) throw new Error("API dan ma'lumot olinmadi");
-      let data = await res.json();
-      container.innerHTML = "";
-      data.forEach((elem) => {
-        let card = document.createElement("div");
-        card.classList.add("card");
-        let img = document.createElement("img");
-        img.src = elem.flags.png;
-        img.classList.add("flag");
-        let name = document.createElement("h2");
-        name.classList.add("name");
-        name.textContent = elem.name.common;
-        let population = document.createElement("p");
-        population.classList.add("population");
-        population.textContent = `Population: ${elem.population}`;
-        let region = document.createElement("p");
-        region.classList.add("region");
-        region.textContent = `Region: ${elem.region}`;
-        let capital = document.createElement("p");
-        capital.classList.add("capital");
-        capital.textContent = `Capital: ${elem.capital}`;
-        card.append(img, name, population, region, capital);
-        container.append(card);
-      });
-    } catch (error) {
-      console.error("Xatolik:", error.message);
-    }
-  });
-  select.addEventListener("change", async (e) => {
-    try {
-      let url;
-      if (e.target.value === "all") {
-        url = `https://restcountries.com/v3.1/all`;
+
+  async function displayCountries(url) {
+    container.innerHTML = "<p>Yuklanmoqda...</p>";
+    const data = await fetchCountries(url);
+    container.innerHTML = "";
+    data.forEach(createCountryCard);
+  }
+
+  search.addEventListener(
+    "input",
+    debounce(async (e) => {
+      const query = e.target.value.trim();
+      if (query) {
+        await displayCountries(`https://restcountries.com/v3.1/name/${query}`);
       } else {
-        url = `https://restcountries.com/v3.1/region/${e.target.value}`;
+        await displayCountries("https://restcountries.com/v3.1/all");
       }
+    }, 300)
+  );
 
-      let res = await fetch(url);
-      let data = await res.json();
-
-      container.innerHTML = "";
-      data.forEach((elem) => {
-        let card = document.createElement("div");
-        card.classList.add("card");
-
-        let img = document.createElement("img");
-        img.src = elem.flags.png;
-        img.classList.add("flag");
-
-        let name = document.createElement("h2");
-        name.classList.add("name");
-        name.textContent = elem.name.common;
-
-        let population = document.createElement("p");
-        population.classList.add("population");
-        population.textContent = `Population: ${elem.population}`;
-
-        let region = document.createElement("p");
-        region.classList.add("region");
-        region.textContent = `Region: ${elem.region}`;
-
-        let capital = document.createElement("p");
-        capital.classList.add("capital");
-        capital.textContent = `Capital: ${elem.capital}`;
-
-        card.append(img, name, population, region, capital);
-        container.append(card);
-      });
-    } catch (error) {
-      console.error("Xatolik:", error.message);
-    }
+  select.addEventListener("change", async (e) => {
+    const region = e.target.value;
+    const url =
+      region === "all"
+        ? "https://restcountries.com/v3.1/all"
+        : `https://restcountries.com/v3.1/region/${region}`;
+    await displayCountries(url);
   });
 
-  createCard();
+  darkMode.addEventListener("click", () => {
+    body.classList.add("dark-mode");
+    body.classList.remove("light-mode");
+    darkMode.style.display = "none";
+    lightMode.style.display = "block";
+  });
+
+  lightMode.addEventListener("click", () => {
+    body.classList.add("light-mode");
+    body.classList.remove("dark-mode");
+    darkMode.style.display = "block";
+    lightMode.style.display = "none";
+  });
+
+  displayCountries("https://restcountries.com/v3.1/all");
 });
+
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
