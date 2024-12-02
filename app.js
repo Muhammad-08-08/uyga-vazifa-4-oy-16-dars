@@ -125,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 300)
   );
-
   select.addEventListener("change", async (e) => {
     const region = e.target.value;
     const url =
